@@ -27,10 +27,6 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
 
-# clear cache
-RUN php artisan config:clear
-RUN php artisan cache:clear
-
 EXPOSE 80
 
 CMD service nginx start && php artisan migrate --force && php-fpm && php artisan db:seed --force
