@@ -1,21 +1,27 @@
-FROM php:8.3-cli
+FROM php:8.3-fpm
 
-# System dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql zip
+    git curl zip unzip libpq-dev nginx \
+    && docker-php-ext-install pdo pdo_pgsql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
+# Copy project
 COPY . .
 
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan config:cache
+# Permissions
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-EXPOSE 10000
+# Copy nginx config
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+EXPOSE 80
+
+CMD service nginx start && php-fpm
