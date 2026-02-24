@@ -11,6 +11,11 @@
                 <div class="p-6 text-gray-900">
                     {{ __("You're logged in!") }}
                 </div>
+                <div class="px-6 py-2 text-gray-900 border-t">
+                    <a href="{{ config('services.foodpanda.url') }}/check-sso?token={{ session('foodpanda_token') }}" target="_blank">
+                        Open Foodpanda (SSO)
+                    </a>
+                </div>
             </div>
         </div>
     </div>
