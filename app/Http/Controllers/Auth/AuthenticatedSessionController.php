@@ -30,16 +30,21 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Sync user session with Foodpanda app
-        try {
+        // Create token for foodpanda SSO
+        $token = Auth::user()
+            ->createToken('foodpanda-sso')
+            ->plainTextToken;
 
-            Http::timeout(3)
-                ->post(
-                    config('services.foodpanda.url') . '/api/external-login',
-                    [
-                        'user' => Auth::user(),
-                    ]
-                );
+        // Save token in session
+        session(['foodpanda_token' => $token]);
+
+        try {
+            Http::timeout(3)->post(
+                config('services.foodpanda.url') . '/api/external-login',
+                [
+                    'user' => Auth::user(),
+                ]
+            );
         } catch (\Throwable $e) {
             Log::warning('Foodpanda sync failed: ' . $e->getMessage());
         }
