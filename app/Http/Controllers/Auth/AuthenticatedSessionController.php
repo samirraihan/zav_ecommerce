@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -27,6 +28,18 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        // Sync user session with Foodpanda app
+        try {
+            Http::post(
+                config('services.foodpanda.url') . '/api/external-login',
+                [
+                    'user' => auth()->user(),
+                ]
+            );
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
