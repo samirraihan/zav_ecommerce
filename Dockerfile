@@ -1,23 +1,19 @@
 FROM php:8.3-cli
 
-# Install system dependencies
+# System dependencies
 RUN apt-get update && apt-get install -y \
-    git curl unzip libzip-dev zip nodejs npm \
-    && docker-php-ext-install pdo pdo_mysql
+    git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
 
-# Install composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Copy project
 COPY . .
 
-# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
 
-# Laravel setup
 RUN php artisan config:cache
 
 EXPOSE 10000
