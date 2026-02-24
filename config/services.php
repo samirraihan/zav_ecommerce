@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'foodpanda' => [
+        'url' => env('FOODPANDA_APP_URL'),
+    ],
+
 ];
