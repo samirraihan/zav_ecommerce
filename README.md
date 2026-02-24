@@ -1,59 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ecommerce App (Auth Provider)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is the **authentication provider** in a multi-login system built with Laravel 12 and Sanctum.
 
-## About Laravel
+When a user logs in or registers here, they can automatically access the **Foodpanda App** without logging in again (SSO-style authentication).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Laravel 12
+* Laravel Breeze (Blade)
+* Laravel Sanctum
+* MySQL
+* PHP 8+
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## ⚙️ Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/samirraihan/zav_ecommerce.git
+cd ecommerce-app
+composer install
+cp .env.example .env
+php artisan key:generate
+```
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🗄️ Database Setup
 
-### Premium Partners
+Create database:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```
+ecommerce_db
+```
 
-## Contributing
+Update `.env`:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+DB_DATABASE=ecommerce_db
+```
 
-## Code of Conduct
+Run migrations:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan migrate
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 👤 Seed Users (Optional)
 
-## License
+```bash
+php artisan db:seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Default password:
+
+```
+password
+```
+
+---
+
+## 🔐 Sanctum Setup
+
+Sanctum is used to generate SSO tokens.
+
+```bash
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+php artisan migrate
+```
+
+---
+
+## ▶️ Run Project
+
+```bash
+php artisan serve
+```
+
+Default:
+
+```
+http://ecommerce-app.test
+```
+
+---
+
+## 🔄 SSO Flow (Auth Provider)
+
+1. User logs in or registers.
+2. Sanctum token is generated.
+3. User is redirected from Foodpanda to:
+
+```
+/sso-login
+```
+
+4. Ecommerce verifies session.
+5. Redirects back with token.
+
+Route:
+
+```
+GET /sso-login
+```
+
+---
+
+## 📡 API Endpoints
+
+### Get Authenticated User
+
+```
+GET /api/me
+```
+
+Requires Sanctum token.
+
+Used by Foodpanda app to validate user identity.
+
+---
+
+## 🔧 Environment Variables
+
+```
+FOODPANDA_APP_URL=http://foodpanda-app.test:8080
+```
+
+---
+
+## 🧠 Architecture Note
+
+Browser sessions are domain-scoped, so authentication between applications is handled using **token-based redirect flow**, similar to OAuth SSO.
+
+---
+
+## 👨‍💻 Author
+
+Samir Raihan – Laravel Multi Login Task – Hiring Assignment
