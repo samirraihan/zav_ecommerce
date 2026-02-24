@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
                 ->post(
                     config('services.foodpanda.url') . '/api/external-login',
                     [
-                        'user' => auth()->user(),
+                        'user' => Auth::user(),
                     ]
                 );
         } catch (\Throwable $e) {
