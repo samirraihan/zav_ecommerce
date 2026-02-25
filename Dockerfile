@@ -22,7 +22,6 @@ RUN npm run build
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
-RUN chmod -R 775 storage bootstrap/cache
 
 # nginx config
 COPY docker/nginx.conf /etc/nginx/sites-available/default
