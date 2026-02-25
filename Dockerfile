@@ -29,4 +29,4 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 EXPOSE 80
 
-CMD service nginx start && php artisan migrate --force && php-fpm && php artisan db:seed --force
+CMD service nginx start && php artisan migrate --force && php-fpm && php artisan db:seed --force && php artisan optimize:clear
